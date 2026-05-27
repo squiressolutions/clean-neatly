@@ -1,14 +1,22 @@
 import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app  = express()
 const PORT = process.env.PORT || 3001
 
-const resend = new Resend(process.env.RESEND_API_KEY)
 const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || 'cleanneatly1219@gmail.com'
+const GMAIL_USER   = process.env.GMAIL_USER   || 'cleanneatly1219@gmail.com'
+const GMAIL_PASS   = process.env.GMAIL_APP_PASSWORD
+
+function getTransporter() {
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user: GMAIL_USER, pass: GMAIL_PASS },
+  })
+}
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -87,8 +95,9 @@ app.post('/api/quote', async (req, res) => {
   `
 
   try {
-    await resend.emails.send({
-      from: 'Clean Neatly LLC <onboarding@resend.dev>',
+    const transporter = getTransporter()
+    await transporter.sendMail({
+      from: `"Clean Neatly LLC" <${GMAIL_USER}>`,
       to: NOTIFY_EMAIL,
       replyTo: email,
       subject: `New Quote Request from ${name}`,
