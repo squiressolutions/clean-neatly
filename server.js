@@ -17,10 +17,13 @@ app.use(express.static(path.join(__dirname, 'public')))
 // ── Quote Request ─────────────────────────────────────────────────────────────
 app.post('/api/quote', async (req, res) => {
   const {
-    name, email, phone, business,
+    fname, lname, email, phone, biz,
     sqft, facility, services,
     schedule, notes
   } = req.body
+
+  const name     = [fname, lname].filter(Boolean).join(' ').trim()
+  const business = biz || ''
 
   if (!name || !email) {
     return res.status(400).json({ error: 'Name and email are required.' })
