@@ -8,7 +8,7 @@ const app  = express()
 const PORT = process.env.PORT || 3001
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || 'keenansquires@gmail.com'
+const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || 'cleanneatly1219@gmail.com'
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -85,7 +85,7 @@ app.post('/api/quote', async (req, res) => {
 
   try {
     await resend.emails.send({
-      from: 'Clean Neatly <onboarding@resend.dev>',
+      from: 'Clean Neatly LLC <onboarding@resend.dev>',
       to: NOTIFY_EMAIL,
       replyTo: email,
       subject: `New Quote Request from ${name}`,
