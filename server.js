@@ -7,8 +7,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app  = express()
 const PORT = process.env.PORT || 3001
 
-const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || 'cleanneatly1219@gmail.com'
-const GMAIL_USER   = process.env.GMAIL_USER   || 'cleanneatly1219@gmail.com'
+const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL     || 'cleanneatly1219@gmail.com'
+const GMAIL_USER   = process.env.GMAIL_USER        || 'cleanneatly1219@gmail.com'
 const GMAIL_PASS   = process.env.GMAIL_APP_PASSWORD
 
 function getTransporter() {
@@ -22,74 +22,54 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, 'public')))
 
+// ── Clean URL Redirects ───────────────────────────────────────────────────────
+app.get('/services',  (req, res) => res.redirect(301, '/services.html'))
+app.get('/about',     (req, res) => res.redirect(301, '/about.html'))
+app.get('/faq',       (req, res) => res.redirect(301, '/faq.html'))
+app.get('/contact',   (req, res) => res.redirect(301, '/contact.html'))
+app.get('/quote',     (req, res) => res.redirect(301, '/quote.html'))
+
 // ── Quote Request ─────────────────────────────────────────────────────────────
 app.post('/api/quote', async (req, res) => {
   const {
     fname, lname, email, phone, biz,
-    sqft, facility, services,
-    schedule, notes
+    sqft, facility, address, schedule,
+    startDate, notes, services
   } = req.body
 
-  const name     = [fname, lname].filter(Boolean).join(' ').trim()
-  const business = biz || ''
+  const name = [fname, lname].filter(Boolean).join(' ').trim()
 
   if (!name || !email) {
     return res.status(400).json({ error: 'Name and email are required.' })
   }
 
-  // Build services list
-  const serviceList = Array.isArray(services)
+  const serviceList = Array.isArray(services) && services.length
     ? services.join(', ')
-    : services || 'Not specified'
+    : (typeof services === 'string' && services ? services : 'Not specified')
 
   const html = `
-    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#f8f5ff;padding:32px;border-radius:12px;">
-      <div style="background:#3b1f6e;padding:20px 24px;border-radius:8px;margin-bottom:24px;">
-        <h1 style="color:#fff;margin:0;font-size:22px;letter-spacing:1px;">NEW QUOTE REQUEST</h1>
-        <p style="color:#d4b8f0;margin:4px 0 0;font-size:13px;">Clean Neatly LLC · Commercial Cleaning</p>
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#f8f5ff;padding:0;border-radius:12px;overflow:hidden;">
+      <div style="background:linear-gradient(135deg,#3b1f6e,#6b35a8);padding:24px 28px;">
+        <h1 style="color:#fff;margin:0;font-size:20px;letter-spacing:0.5px;font-weight:700;">NEW QUOTE REQUEST</h1>
+        <p style="color:#d4b8f0;margin:5px 0 0;font-size:13px;">Clean Neatly LLC · Commercial Cleaning · St. Louis, MO</p>
       </div>
-
-      <table style="width:100%;border-collapse:collapse;">
-        <tr>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;width:40%;font-size:13px;color:#6b35a8;font-weight:600;">Name</td>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;font-size:14px;color:#1a1a2e;">${name}</td>
-        </tr>
-        <tr>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;font-size:13px;color:#6b35a8;font-weight:600;">Email</td>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;font-size:14px;color:#1a1a2e;"><a href="mailto:${email}" style="color:#6b35a8;">${email}</a></td>
-        </tr>
-        <tr>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;font-size:13px;color:#6b35a8;font-weight:600;">Phone</td>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;font-size:14px;color:#1a1a2e;">${phone || 'Not provided'}</td>
-        </tr>
-        <tr>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;font-size:13px;color:#6b35a8;font-weight:600;">Business</td>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;font-size:14px;color:#1a1a2e;">${business || 'Not provided'}</td>
-        </tr>
-        <tr>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;font-size:13px;color:#6b35a8;font-weight:600;">Sq. Footage</td>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;font-size:14px;color:#1a1a2e;">${sqft || 'Not specified'}</td>
-        </tr>
-        <tr>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;font-size:13px;color:#6b35a8;font-weight:600;">Facility Type</td>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;font-size:14px;color:#1a1a2e;">${facility || 'Not specified'}</td>
-        </tr>
-        <tr>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;font-size:13px;color:#6b35a8;font-weight:600;">Services Needed</td>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;font-size:14px;color:#1a1a2e;">${serviceList}</td>
-        </tr>
-        <tr>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;font-size:13px;color:#6b35a8;font-weight:600;">Preferred Schedule</td>
-          <td style="padding:10px 0;border-bottom:1px solid #e0d4f7;font-size:14px;color:#1a1a2e;">${schedule || 'Not specified'}</td>
-        </tr>
-        ${notes ? `<tr>
-          <td style="padding:10px 0;font-size:13px;color:#6b35a8;font-weight:600;vertical-align:top;">Notes</td>
-          <td style="padding:10px 0;font-size:14px;color:#1a1a2e;">${notes}</td>
-        </tr>` : ''}
-      </table>
-
-      <div style="margin-top:24px;padding:14px 18px;background:#3b1f6e;border-radius:8px;text-align:center;">
-        <p style="color:#d4b8f0;font-size:12px;margin:0;">Clean Neatly LLC · St. Louis, MO · cleanneatly.com</p>
+      <div style="padding:28px;">
+        <table style="width:100%;border-collapse:collapse;">
+          <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;width:38%;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Name</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;color:#1a1a2e;">${name}</td></tr>
+          <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Email</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;"><a href="mailto:${email}" style="color:#6b35a8;">${email}</a></td></tr>
+          <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Phone</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;color:#1a1a2e;">${phone || '—'}</td></tr>
+          <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Business</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;color:#1a1a2e;">${biz || '—'}</td></tr>
+          <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Square Footage</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;color:#1a1a2e;">${sqft || '—'}</td></tr>
+          <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Facility Type</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;color:#1a1a2e;">${facility || '—'}</td></tr>
+          <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Address / ZIP</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;color:#1a1a2e;">${address || '—'}</td></tr>
+          <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Services Needed</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;color:#1a1a2e;">${serviceList}</td></tr>
+          <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Schedule</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;color:#1a1a2e;">${schedule || '—'}</td></tr>
+          <tr><td style="padding:10px 0;${notes ? 'border-bottom:1px solid #e8e2f0;' : ''}font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Start Date</td><td style="padding:10px 0;${notes ? 'border-bottom:1px solid #e8e2f0;' : ''}font-size:14px;color:#1a1a2e;">${startDate || '—'}</td></tr>
+          ${notes ? `<tr><td style="padding:10px 0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;vertical-align:top;">Notes</td><td style="padding:10px 0;font-size:14px;color:#1a1a2e;">${notes}</td></tr>` : ''}
+        </table>
+      </div>
+      <div style="background:#3b1f6e;padding:14px 28px;text-align:center;">
+        <p style="color:#d4b8f0;font-size:12px;margin:0;">Clean Neatly LLC · cleanneatly1219@gmail.com · (314) 325-6533</p>
       </div>
     </div>
   `
@@ -100,12 +80,56 @@ app.post('/api/quote', async (req, res) => {
       from: `"Clean Neatly LLC" <${GMAIL_USER}>`,
       to: NOTIFY_EMAIL,
       replyTo: email,
-      subject: `New Quote Request from ${name}`,
+      subject: `New Quote Request — ${name}`,
       html,
     })
     res.json({ success: true })
   } catch (err) {
-    console.error('Email error:', err)
+    console.error('Quote email error:', err)
+    res.status(500).json({ error: 'Failed to send — please try again.' })
+  }
+})
+
+// ── Contact Form ──────────────────────────────────────────────────────────────
+app.post('/api/contact', async (req, res) => {
+  const { name, email, phone, message } = req.body
+
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: 'Name, email, and message are required.' })
+  }
+
+  const html = `
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#f8f5ff;padding:0;border-radius:12px;overflow:hidden;">
+      <div style="background:linear-gradient(135deg,#3b1f6e,#6b35a8);padding:24px 28px;">
+        <h1 style="color:#fff;margin:0;font-size:20px;letter-spacing:0.5px;font-weight:700;">NEW MESSAGE</h1>
+        <p style="color:#d4b8f0;margin:5px 0 0;font-size:13px;">Clean Neatly LLC · Contact Form</p>
+      </div>
+      <div style="padding:28px;">
+        <table style="width:100%;border-collapse:collapse;">
+          <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;width:30%;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Name</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;color:#1a1a2e;">${name}</td></tr>
+          <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Email</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;"><a href="mailto:${email}" style="color:#6b35a8;">${email}</a></td></tr>
+          <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Phone</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;color:#1a1a2e;">${phone || '—'}</td></tr>
+          <tr><td style="padding:10px 0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;vertical-align:top;">Message</td><td style="padding:10px 0;font-size:14px;color:#1a1a2e;line-height:1.6;">${message}</td></tr>
+        </table>
+      </div>
+      <div style="background:#3b1f6e;padding:14px 28px;text-align:center;">
+        <p style="color:#d4b8f0;font-size:12px;margin:0;">Clean Neatly LLC · cleanneatly1219@gmail.com · (314) 325-6533</p>
+      </div>
+    </div>
+  `
+
+  try {
+    const transporter = getTransporter()
+    await transporter.sendMail({
+      from: `"Clean Neatly LLC" <${GMAIL_USER}>`,
+      to: NOTIFY_EMAIL,
+      replyTo: email,
+      subject: `New Message from ${name}`,
+      html,
+    })
+    res.json({ success: true })
+  } catch (err) {
+    console.error('Contact email error:', err)
     res.status(500).json({ error: 'Failed to send — please try again.' })
   }
 })
