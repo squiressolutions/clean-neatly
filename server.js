@@ -51,7 +51,7 @@ app.post('/api/quote', async (req, res) => {
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#f8f5ff;padding:0;border-radius:12px;overflow:hidden;">
       <div style="background:linear-gradient(135deg,#3b1f6e,#6b35a8);padding:24px 28px;">
         <h1 style="color:#fff;margin:0;font-size:20px;letter-spacing:0.5px;font-weight:700;">NEW QUOTE REQUEST</h1>
-        <p style="color:#d4b8f0;margin:5px 0 0;font-size:13px;">Clean Neatly LLC · Commercial Cleaning · St. Louis, MO</p>
+        <p style="color:#d4b8f0;margin:5px 0 0;font-size:13px;">Cleaned Neatly LLC · Commercial Cleaning · St. Louis, MO</p>
       </div>
       <div style="padding:28px;">
         <table style="width:100%;border-collapse:collapse;">
@@ -69,7 +69,7 @@ app.post('/api/quote', async (req, res) => {
         </table>
       </div>
       <div style="background:#3b1f6e;padding:14px 28px;text-align:center;">
-        <p style="color:#d4b8f0;font-size:12px;margin:0;">Clean Neatly LLC · cleanneatly1219@gmail.com · (314) 325-6533</p>
+        <p style="color:#d4b8f0;font-size:12px;margin:0;">Cleaned Neatly LLC · cleanneatly1219@gmail.com · (314) 325-6533</p>
       </div>
     </div>
   `
@@ -77,7 +77,7 @@ app.post('/api/quote', async (req, res) => {
   try {
     const transporter = getTransporter()
     await transporter.sendMail({
-      from: `"Clean Neatly LLC" <${GMAIL_USER}>`,
+      from: `"Cleaned Neatly LLC" <${GMAIL_USER}>`,
       to: NOTIFY_EMAIL,
       replyTo: email,
       subject: `New Quote Request — ${name}`,
@@ -102,7 +102,7 @@ app.post('/api/contact', async (req, res) => {
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#f8f5ff;padding:0;border-radius:12px;overflow:hidden;">
       <div style="background:linear-gradient(135deg,#3b1f6e,#6b35a8);padding:24px 28px;">
         <h1 style="color:#fff;margin:0;font-size:20px;letter-spacing:0.5px;font-weight:700;">NEW MESSAGE</h1>
-        <p style="color:#d4b8f0;margin:5px 0 0;font-size:13px;">Clean Neatly LLC · Contact Form</p>
+        <p style="color:#d4b8f0;margin:5px 0 0;font-size:13px;">Cleaned Neatly LLC · Contact Form</p>
       </div>
       <div style="padding:28px;">
         <table style="width:100%;border-collapse:collapse;">
@@ -113,7 +113,7 @@ app.post('/api/contact', async (req, res) => {
         </table>
       </div>
       <div style="background:#3b1f6e;padding:14px 28px;text-align:center;">
-        <p style="color:#d4b8f0;font-size:12px;margin:0;">Clean Neatly LLC · cleanneatly1219@gmail.com · (314) 325-6533</p>
+        <p style="color:#d4b8f0;font-size:12px;margin:0;">Cleaned Neatly LLC · cleanneatly1219@gmail.com · (314) 325-6533</p>
       </div>
     </div>
   `
@@ -121,7 +121,7 @@ app.post('/api/contact', async (req, res) => {
   try {
     const transporter = getTransporter()
     await transporter.sendMail({
-      from: `"Clean Neatly LLC" <${GMAIL_USER}>`,
+      from: `"Cleaned Neatly LLC" <${GMAIL_USER}>`,
       to: NOTIFY_EMAIL,
       replyTo: email,
       subject: `New Message from ${name}`,
@@ -140,5 +140,5 @@ app.get('*', (req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`Clean Neatly server running on port ${PORT}`)
+  console.log(`Cleaned Neatly server running on port ${PORT}`)
 })

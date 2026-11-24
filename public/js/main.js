@@ -1,13 +1,13 @@
 /* ─────────────────────────────────────────────────
-   Clean Neatly LLC · Shared JavaScript
+   Cleaned Neatly LLC · Shared JavaScript
 ───────────────────────────────────────────────── */
 
 const NAV_HTML = `
 <nav id="main-nav">
   <a href="/" class="logo">
-    <img src="/logo.png" alt="Clean Neatly LLC" class="logo-img">
+    <img src="/logo.png" alt="Cleaned Neatly LLC" class="logo-img">
     <div class="logo-text">
-      Clean Neatly LLC
+      Cleaned Neatly LLC
       <span class="logo-sub">Commercial Cleaning · St. Louis, MO</span>
     </div>
   </a>
@@ -41,9 +41,9 @@ const FOOTER_HTML = `
     <div class="footer-top">
       <div class="footer-brand">
         <a href="/" class="logo">
-          <img src="/logo.png" alt="Clean Neatly LLC" class="logo-img" style="width:46px;height:46px;border-radius:50%;background:#fff;padding:2px;">
+          <img src="/logo.png" alt="Cleaned Neatly LLC" class="logo-img" style="width:46px;height:46px;border-radius:50%;background:#fff;padding:2px;">
           <div class="logo-text footer-brand">
-            Clean Neatly LLC
+            Cleaned Neatly LLC
             <span class="logo-sub">Commercial Cleaning</span>
           </div>
         </a>
@@ -81,7 +81,7 @@ const FOOTER_HTML = `
       </div>
     </div>
     <div class="footer-bottom">
-      <div class="footer-copy">&copy; 2026 Clean Neatly LLC. All rights reserved.</div>
+      <div class="footer-copy">&copy; 2026 Cleaned Neatly LLC. All rights reserved.</div>
       <div class="footer-legal">Licensed &amp; Insured &nbsp;·&nbsp; St. Louis, MO</div>
     </div>
   </div>
