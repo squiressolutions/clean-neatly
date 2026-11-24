@@ -74,7 +74,7 @@ const FOOTER_HTML = `
       </div>
       <div>
         <div class="footer-col-title">Contact</div>
-        <div class="footer-contact-line"><i class="fa-solid fa-phone"></i><a href="tel:3143256533">(314) 325-6533</a></div>
+        <div class="footer-contact-line"><i class="fa-solid fa-phone"></i><a href="tel:3145657406">(314) 565-7406</a></div>
         <div class="footer-contact-line"><i class="fa-solid fa-envelope"></i><a href="mailto:cleanneatly1219@gmail.com">cleanneatly1219@gmail.com</a></div>
         <div class="footer-contact-line"><i class="fa-solid fa-clock"></i><span>Mon–Sat: 7am – 7pm</span></div>
         <div class="footer-contact-line"><i class="fa-solid fa-location-dot"></i><span>St. Louis Metro Area, MO</span></div>

@@ -69,7 +69,7 @@ app.post('/api/quote', async (req, res) => {
         </table>
       </div>
       <div style="background:#3b1f6e;padding:14px 28px;text-align:center;">
-        <p style="color:#d4b8f0;font-size:12px;margin:0;">Cleaned Neatly LLC · cleanneatly1219@gmail.com · (314) 325-6533</p>
+        <p style="color:#d4b8f0;font-size:12px;margin:0;">Cleaned Neatly LLC · cleanneatly1219@gmail.com · (314) 565-7406</p>
       </div>
     </div>
   `
@@ -113,7 +113,7 @@ app.post('/api/contact', async (req, res) => {
         </table>
       </div>
       <div style="background:#3b1f6e;padding:14px 28px;text-align:center;">
-        <p style="color:#d4b8f0;font-size:12px;margin:0;">Cleaned Neatly LLC · cleanneatly1219@gmail.com · (314) 325-6533</p>
+        <p style="color:#d4b8f0;font-size:12px;margin:0;">Cleaned Neatly LLC · cleanneatly1219@gmail.com · (314) 565-7406</p>
       </div>
     </div>
   `
