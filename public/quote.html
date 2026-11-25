@@ -107,7 +107,7 @@
         <div class="form-grid form-section-gap">
           <div class="field">
             <label for="schedule">Preferred Cleaning Schedule</label>
-            <select id="schedule" name="schedule">
+            <select id="schedule" name="schedule" onchange="document.getElementById('customDaysWrap').style.display=this.value==='Custom Schedule'?'block':'none'">
               <option value="">Select preferred frequency...</option>
               <option value="Nightly (5 days/week)">Nightly (5 days/week)</option>
               <option value="3 Days per Week">3 Days per Week</option>
@@ -117,6 +117,9 @@
               <option value="One-Time / As Needed">One-Time / As Needed</option>
               <option value="Custom Schedule">Custom Schedule</option>
             </select>
+            <div id="customDaysWrap" style="display:none;margin-top:0.6rem;">
+              <input type="text" id="customDays" name="customDays" placeholder="e.g. Mon, Wed, Fri" style="width:100%;">
+            </div>
           </div>
           <div class="field">
             <label for="startDate">Preferred Start Date</label>

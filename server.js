@@ -76,7 +76,7 @@ app.get('/quote',     (req, res) => res.redirect(301, '/quote.html'))
 app.post('/api/quote', async (req, res) => {
   const {
     fname, lname, email, phone, biz,
-    sqft, facility, address, schedule,
+    sqft, facility, address, schedule, customDays,
     startDate, notes, services
   } = req.body
 
@@ -106,7 +106,7 @@ app.post('/api/quote', async (req, res) => {
           <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Facility Type</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;color:#1a1a2e;">${facility || '—'}</td></tr>
           <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Address / ZIP</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;color:#1a1a2e;">${address || '—'}</td></tr>
           <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Services Needed</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;color:#1a1a2e;">${serviceList}</td></tr>
-          <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Schedule</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;color:#1a1a2e;">${schedule || '—'}</td></tr>
+          <tr><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Schedule</td><td style="padding:10px 0;border-bottom:1px solid #e8e2f0;font-size:14px;color:#1a1a2e;">${schedule === 'Custom Schedule' && customDays ? `Custom — ${customDays}` : (schedule || '—')}</td></tr>
           <tr><td style="padding:10px 0;${notes ? 'border-bottom:1px solid #e8e2f0;' : ''}font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Start Date</td><td style="padding:10px 0;${notes ? 'border-bottom:1px solid #e8e2f0;' : ''}font-size:14px;color:#1a1a2e;">${startDate || '—'}</td></tr>
           ${notes ? `<tr><td style="padding:10px 0;font-size:12px;color:#6b35a8;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;vertical-align:top;">Notes</td><td style="padding:10px 0;font-size:14px;color:#1a1a2e;">${notes}</td></tr>` : ''}
         </table>
