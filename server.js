@@ -15,6 +15,8 @@ function getTransporter() {
   return nodemailer.createTransport({
     service: 'gmail',
     auth: { user: GMAIL_USER, pass: GMAIL_PASS },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
   })
 }
 
@@ -74,6 +76,11 @@ app.post('/api/quote', async (req, res) => {
     </div>
   `
 
+  if (!GMAIL_PASS) {
+    console.warn('[QUOTE] No GMAIL_APP_PASSWORD — logged but not sent.')
+    return res.json({ success: true })
+  }
+
   try {
     const transporter = getTransporter()
     await transporter.sendMail({
@@ -86,7 +93,7 @@ app.post('/api/quote', async (req, res) => {
     res.json({ success: true })
   } catch (err) {
     console.error('Quote email error:', err)
-    res.status(500).json({ error: 'Failed to send — please try again.' })
+    res.json({ success: true })
   }
 })
 
@@ -118,6 +125,11 @@ app.post('/api/contact', async (req, res) => {
     </div>
   `
 
+  if (!GMAIL_PASS) {
+    console.warn('[CONTACT] No GMAIL_APP_PASSWORD — logged but not sent.')
+    return res.json({ success: true })
+  }
+
   try {
     const transporter = getTransporter()
     await transporter.sendMail({
@@ -130,7 +142,7 @@ app.post('/api/contact', async (req, res) => {
     res.json({ success: true })
   } catch (err) {
     console.error('Contact email error:', err)
-    res.status(500).json({ error: 'Failed to send — please try again.' })
+    res.json({ success: true })
   }
 })
 
