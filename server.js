@@ -1,23 +1,39 @@
 import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import nodemailer from 'nodemailer'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app  = express()
 const PORT = process.env.PORT || 3001
 
-const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL     || 'cleanneatly1219@gmail.com'
-const GMAIL_USER   = process.env.GMAIL_USER        || 'cleanneatly1219@gmail.com'
-const GMAIL_PASS   = process.env.GMAIL_APP_PASSWORD
+const NOTIFY_EMAIL  = process.env.NOTIFY_EMAIL  || 'cleanneatly1219@gmail.com'
+const RESEND_API_KEY = process.env.RESEND_API_KEY
 
-function getTransporter() {
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: { user: GMAIL_USER, pass: GMAIL_PASS },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
+async function sendEmail({ to, replyTo, subject, html }) {
+  if (!RESEND_API_KEY) {
+    console.warn('[EMAIL] No RESEND_API_KEY — logged but not sent.')
+    return
+  }
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${RESEND_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: 'Cleaned Neatly LLC <onboarding@resend.dev>',
+      to,
+      reply_to: replyTo,
+      subject,
+      html,
+    }),
   })
+  if (!res.ok) {
+    const err = await res.text()
+    console.error('[EMAIL] Resend error:', err)
+  } else {
+    console.log('[EMAIL] Sent:', subject)
+  }
 }
 
 app.use(express.json())
@@ -27,18 +43,24 @@ app.use(express.static(path.join(__dirname, 'public')))
 // ── Debug ─────────────────────────────────────────────────────────────────────
 app.get('/api/debug-email', async (req, res) => {
   const status = {
-    GMAIL_USER,
     NOTIFY_EMAIL,
-    GMAIL_PASS_SET: !!GMAIL_PASS,
-    GMAIL_PASS_LENGTH: GMAIL_PASS ? GMAIL_PASS.length : 0,
+    RESEND_API_KEY_SET: !!RESEND_API_KEY,
+    RESEND_API_KEY_LENGTH: RESEND_API_KEY ? RESEND_API_KEY.length : 0,
   }
-  try {
-    const t = getTransporter()
-    await t.verify()
-    status.smtp_verified = true
-  } catch (err) {
-    status.smtp_verified = false
-    status.smtp_error = err.message
+  if (RESEND_API_KEY) {
+    try {
+      const r = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from: 'test@resend.dev', to: NOTIFY_EMAIL, subject: 'debug', html: 'test' }),
+      })
+      status.resend_status = r.status
+      status.resend_ok = r.status < 400
+      const body = await r.json()
+      status.resend_body = body
+    } catch (err) {
+      status.resend_error = err.message
+    }
   }
   res.json(status)
 })
@@ -95,15 +117,10 @@ app.post('/api/quote', async (req, res) => {
     </div>
   `
 
-  if (!GMAIL_PASS) {
-    console.warn('[QUOTE] No GMAIL_APP_PASSWORD — logged but not sent.')
-    return res.json({ success: true })
-  }
+  console.log(`[QUOTE] ${new Date().toISOString()} | ${name} | ${email}`)
 
   try {
-    const transporter = getTransporter()
-    await transporter.sendMail({
-      from: `"Cleaned Neatly LLC" <${GMAIL_USER}>`,
+    await sendEmail({
       to: NOTIFY_EMAIL,
       replyTo: email,
       subject: `New Quote Request — ${name}`,
@@ -111,7 +128,7 @@ app.post('/api/quote', async (req, res) => {
     })
     res.json({ success: true })
   } catch (err) {
-    console.error('[QUOTE] Email send error:', err.message)
+    console.error('[QUOTE] Error:', err.message)
     res.json({ success: true })
   }
 })
@@ -144,23 +161,18 @@ app.post('/api/contact', async (req, res) => {
     </div>
   `
 
-  if (!GMAIL_PASS) {
-    console.warn('[CONTACT] No GMAIL_APP_PASSWORD — logged but not sent.')
-    return res.json({ success: true })
-  }
+  console.log(`[CONTACT] ${new Date().toISOString()} | ${name} | ${email}`)
 
   try {
-    const transporter = getTransporter()
-    await transporter.sendMail({
-      from: `"Cleaned Neatly LLC" <${GMAIL_USER}>`,
+    await sendEmail({
       to: NOTIFY_EMAIL,
       replyTo: email,
-      subject: `New Message from ${name}`,
+      subject: `New Message — ${name}`,
       html,
     })
     res.json({ success: true })
   } catch (err) {
-    console.error('Contact email error:', err)
+    console.error('[CONTACT] Error:', err.message)
     res.json({ success: true })
   }
 })
