@@ -51,6 +51,7 @@ const FOOTER_HTML = `
         <div class="footer-socials" style="margin-top:1.25rem;">
           <a href="https://www.facebook.com/cleanneatly" target="_blank" rel="noopener" class="footer-social" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
           <a href="https://www.instagram.com/cleanneatly" target="_blank" rel="noopener" class="footer-social" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://share.google/SCLUpSHLoKC7BK7q1" target="_blank" rel="noopener" class="footer-social" aria-label="Google Business"><i class="fa-brands fa-google"></i></a>
         </div>
       </div>
       <div>
@@ -78,6 +79,7 @@ const FOOTER_HTML = `
         <div class="footer-contact-line"><i class="fa-solid fa-envelope"></i><a href="mailto:cleanneatly1219@gmail.com">cleanneatly1219@gmail.com</a></div>
         <div class="footer-contact-line"><i class="fa-solid fa-clock"></i><span>Mon–Sat: 7am – 7pm</span></div>
         <div class="footer-contact-line"><i class="fa-solid fa-location-dot"></i><span>St. Louis Metro Area, MO</span></div>
+        <div class="footer-contact-line" style="margin-top:0.75rem;"><a href="https://share.google/SCLUpSHLoKC7BK7q1" target="_blank" rel="noopener" style="color:var(--purple-300,#c084fc);font-size:0.8rem;display:flex;align-items:center;gap:0.4rem;"><i class="fa-brands fa-google"></i> Leave us a Google review</a></div>
       </div>
     </div>
     <div class="footer-bottom">
