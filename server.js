@@ -24,6 +24,25 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, 'public')))
 
+// ── Debug ─────────────────────────────────────────────────────────────────────
+app.get('/api/debug-email', async (req, res) => {
+  const status = {
+    GMAIL_USER,
+    NOTIFY_EMAIL,
+    GMAIL_PASS_SET: !!GMAIL_PASS,
+    GMAIL_PASS_LENGTH: GMAIL_PASS ? GMAIL_PASS.length : 0,
+  }
+  try {
+    const t = getTransporter()
+    await t.verify()
+    status.smtp_verified = true
+  } catch (err) {
+    status.smtp_verified = false
+    status.smtp_error = err.message
+  }
+  res.json(status)
+})
+
 // ── Clean URL Redirects ───────────────────────────────────────────────────────
 app.get('/services',  (req, res) => res.redirect(301, '/services.html'))
 app.get('/about',     (req, res) => res.redirect(301, '/about.html'))
@@ -92,7 +111,7 @@ app.post('/api/quote', async (req, res) => {
     })
     res.json({ success: true })
   } catch (err) {
-    console.error('Quote email error:', err)
+    console.error('[QUOTE] Email send error:', err.message)
     res.json({ success: true })
   }
 })
